@@ -1,8 +1,8 @@
 package com.sametbilek.controller;
 
-import com.sametbilek.config.JwtRequestFilter;
 import com.sametbilek.services.AuthService;
 import com.sametbilek.services.JwtUtil;
+import com.sametbilek.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,22 +12,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map; // Map sınıfını import etmeyi unutma
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestController
+//@RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    public AuthController(AuthenticationManager authenticationManager, AuthService authService, JwtUtil jwtUtil) {
+    public AuthController(AuthenticationManager authenticationManager, AuthService authService,
+                          UserService userService, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.authService = authService;
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -50,7 +52,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Map<String, String> request) {
         try {
-            authService.registerUser(request.get("username"), request.get("password"));
+            userService.registerUser(request.get("username"), request.get("password"));
             return ResponseEntity.ok("Kullanıcı başarıyla kaydedildi!");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

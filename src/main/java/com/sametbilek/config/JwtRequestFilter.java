@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
-            UserDetails userDetails = new User(username, jwt, authorities);
+            UserDetails userDetails = new User(username, "", authorities);
 
             UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authtoken);
