@@ -17,15 +17,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder(); // Manuel olarak oluştur
+        this.passwordEncoder = passwordEncoder;
     }
-
-    // public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-    //this.userRepository = userRepository;
-    //this.passwordEncoder = passwordEncoder;
-    //}
 
 
     public User registerUser(String username, String password) {
@@ -72,10 +67,9 @@ public class UserService {
         }
         // Gelen şifreyi hash'le
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        // Gelen roller ayarlanır. Eğer rol gelmediyse varsayılan olarak USER atanabilir.
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            user.setRoles(Collections.singletonList("ROLE_USER"));
-        }
+        user.setRoles(Collections.singletonList("ROLE_USER"));
+
         return userRepository.save(user);
+
     }
 }

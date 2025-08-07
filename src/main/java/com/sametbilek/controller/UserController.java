@@ -4,12 +4,14 @@ import com.sametbilek.model.User;
 import com.sametbilek.services.AuthService;
 import com.sametbilek.services.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     private final UserService userService;
