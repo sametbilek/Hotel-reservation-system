@@ -4,13 +4,14 @@ import com.sametbilek.model.Room;
 import com.sametbilek.repository.RoomRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()") // Tüm oda işlemleri için login olmayı zorunlu hale getirelim.
 public class RoomController {
 
     private final RoomRepository roomRepository;
@@ -25,8 +26,15 @@ public class RoomController {
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()") // Login olan her çalışan odaları görebilir
-    public ResponseEntity<List<Room>> getAllRooms() {
+    public ResponseEntity<List<Room>> getAllRooms(Authentication authentication) {
+        // Gelen authentication nesnesinin null olup olmadığını kontrol etmeye artık gerek yok,
+        // çünkü @PreAuthorize null olmasına zaten izin vermeyecektir.
+        System.out.println("=================================================");
+        System.out.println(">>> RoomController: /api/rooms endpoint'ine ulaşıldı.");
+        System.out.println(">>> Gelen Principal (Kullanıcı): " + authentication.getName());
+        System.out.println(">>> Gelen Yetkiler: " + authentication.getAuthorities());
+        System.out.println("=================================================");
+
         return ResponseEntity.ok(roomRepository.findAll());
     }
 }

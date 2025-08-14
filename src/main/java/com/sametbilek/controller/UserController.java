@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     private final UserService userService;
@@ -26,11 +25,11 @@ public class UserController {
         return ResponseEntity.status(201).body(savedUser);
     }
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers(@RequestHeader(value = "Authorization") String authHeader) {
         return ResponseEntity.ok(userService.getAllUsers());
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id,@RequestHeader(value = "Authorization") String authHeader) {
         return userService.getUserById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
